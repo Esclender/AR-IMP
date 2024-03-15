@@ -8,75 +8,117 @@
     
 
   </head>
+
+  <script>
+    const imgsIds = [
+      "nft",
+      "nft2",
+      "im1",
+      "im2",
+      "im3",
+      "im4",
+      "im5",
+      "im6",
+      "im7",
+    ]
+
+  
+
+    function renderScene() {
+      const root = document.querySelector('#root')
+      const sceneElement = document.createElement("a-scene");
+      const assets = document.createElement("a-assets");
+
+      sceneElement.setAttribute("vr-mode-ui", "enabled: false;");
+      sceneElement.setAttribute("renderer", "antialias: true; alpha: true; precision: mediump;");
+      sceneElement.setAttribute("embedded", "");
+      sceneElement.setAttribute("arjs", "trackingMethod: best; sourceType: webcam; debugUIEnabled: false;");
+
+
+      // Iterate through the array of image IDs and create video elements
+      imgsIds.forEach(id => {
+          const videoElement = document.createElement("video");
+          videoElement.setAttribute("src", `/${id}.mp4`);
+          videoElement.setAttribute("preload", "auto");
+          videoElement.setAttribute("id", id);
+          videoElement.setAttribute("loop", "");
+
+          // Append the video element to the assets
+          assets.appendChild(videoElement);
+      })
+      
+      sceneElement.appendChild(assets)
+
+      imgsIds.forEach(id => {
+          const aVideo = document.createElement("a-video")
+          const nftElement = document.createElement("a-nft");
+
+          aVideo.setAttribute("src", `#${id}`);
+          aVideo.setAttribute("rotation", "-90 0 0");
+          aVideo.setAttribute("position", "160 0 -170");
+          aVideo.setAttribute("width", "170");
+          aVideo.setAttribute("height", "340");
+
+
+          nftElement.setAttribute(`${id}`, "");
+          nftElement.setAttribute("type", "nft");
+          nftElement.setAttribute("url", `/data/${id}/${id}`);
+          nftElement.setAttribute("smooth", "true");
+          nftElement.setAttribute("smoothount", "10");
+          nftElement.setAttribute("smoothtolerance", "0.01");
+          nftElement.setAttribute("smooththreshold", "5");
+
+          nftElement.appendChild(aVideo);
+          sceneElement.appendChild(nftElement);
+      })
+
+      root.appendChild(sceneElement);
+      
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script>
   <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
   <script>
+
+    
+
     window.onload = function() {
-      AFRAME.registerComponent("videohandler", {
-        init: function() {
-          var marker = this.el;
-  
-          this.vid = document.querySelector("#vid");
-  
-          marker.addEventListener(
-            "markerFound",
-            function() {
-              console.log('found')
-              this.vid.play();
-            }.bind(this)
-          );
-  
-          marker.addEventListener(
-            "markerLost",
-            function() {
-              this.vid.pause();
-              this.vid.currentTime = 0;
-            }.bind(this)
-          );
-        }
-      });
+      renderScene()
+
+
+      imgsIds.map((id) => {
+         return AFRAME.registerComponent(id, {
+          init: function() {
+            var marker = this.el;
+    
+            this.vid = document.querySelector(`#${id}`)
+    
+            marker.addEventListener(
+              "markerFound",
+              function() {
+
+                this.vid.play();
+              }.bind(this)
+            );
+    
+            marker.addEventListener(
+              "markerLost",
+              function() {
+                this.vid.pause();
+                this.vid.currentTime = 0;
+              }.bind(this)
+            );
+          },
+        });
+      })
     };
   </script>
   
-  <body>
-    <body style="margin : 0px; overflow: hidden;">
-      <div class="arjs-loader">
-        <div>Loading, please wait...</div>
-      </div>
-      <a-scene
-        vr-mode-ui="enabled: false;"
-        renderer="antialias: true; alpha: true; precision: mediump;"
-        embedded
-        arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
-      >
-        <a-assets>
-          <video
-            src="/Alumno_02.mp4"
-            preload="auto"
-            id="vid"
-            response-type="arraybuffer"
-            loop
-            autoplay
-            
-          ></video>
-        </a-assets>
+  <body id="root"  style="margin : 0px; overflow: hidden;">
+    <div class="arjs-loader">
+      <div>Loading, please wait...</div>
+    </div>
+
     
-        <a-nft
-          videohandler
-          type="nft"
-          url="/data/nft/img"
-          smooth="true"
-          smoothount="10"
-          smoothtolerance="0.01"
-          smooththreshold="5"
-        >
-          <a-video src="#vid" rotation="-90 0 0" position="160 0 -170" width="170" height="340">
-          </a-video>
-
-        </a-nft>
-
-
-        <a-entity  camera></a-entity>
-      </a-scene>
-  </body>
+</body>
 </html>
