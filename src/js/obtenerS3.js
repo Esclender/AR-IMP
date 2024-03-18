@@ -1,11 +1,14 @@
+/* eslint-disable no-undef */
+require('dotenv').config()
+
 // Import the AWS SDK for JavaScript
 import * as AWS from 'aws-sdk'
 
 // Configure AWS SDK with your credentials
 AWS.config.update({
-  accessKeyId: 'AKIAXGMJMOP3KJOIXTMD',
-  secretAccessKey: '+e+I5ELUmd6U6awp/dqRjIv7wgU/rH2aR9fQ8f80',
-  region: 'sa-east-1'
+  accessKeyId: process.env.accessKeyId,
+  secretAccessKey: process.env.secretAccessKey,
+  region: process.env.region
 });
 
 // Create an S3 instance
