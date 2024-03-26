@@ -1,0 +1,7 @@
+[
+  {
+    "id": "Alumno01",
+    "urlVideo": "https://mp-example-bucket.s3.sa-east-1.amazonaws.com/8846b836-5cda-400b-9c18-0d2c0f225a85/a1/Alumno01.mp4",
+    "urlDescriptor": "https://mpulse-firmas-virtuales.s3.sa-east-1.amazonaws.com/8846b836-5cda-400b-9c18-0d2c0f225a85/a1/Alumno01"
+  }
+]

@@ -4,33 +4,18 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>Vite + React</title>
+    <title>AR</title>
   </head>
+  <link ty >
 
   <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script>
   <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
 
-
-  <script>
-    const imgsIds = [
-    {
-      id: "fotof-1", 
-      url: "https://mp-example-bucket.s3.sa-east-1.amazonaws.com/ar-folder/nft.mp4?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjENL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXNhLWVhc3QtMSJHMEUCIQCIM0qBfAfmwM%2FtbCt%2BwPlkjjOF%2FZ6DuPc9ElTia34o1AIgRFuNSDglQtucQKTudbSFklYT8NxlnaCwS1561BHSwc4q7QII2%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARABGgw0OTQ3NDYyMzU4OTQiDFm8JhdlXqlXqqFyvCrBAqUq9W9DKnZ5kuExAlXtbzMDrT%2BD4G%2BzJH8ZOjNxUl5VDmP14aTT7ZPhH1Lq%2BGn6OU7iLH8X5i2KwyVJbSvrpt7XYS2hdcT7MkJndDpV2q6QI7IhA5Jc4FebqQX1TaGNo%2FRxytTE7Qwtic431soDfvhdDHiRFyMbEq98TzwL%2BalndjPRb%2BOVNFdbklYH6ty7dUaRAMCrEak48Di8Em79SalKjGxew70XwdTmetHV3CsZSJpT9CFln9vPgbG0L2wXMu3EUQCYlhozUbGpYaNoLNGHR%2BFXIw1yakSlUOOvxmBUQ2EHqiSTvBJQjCfNSYxLQOOt8lUZXG855kR9YoMZM6FjThwAPOMKw%2FtHCwKCuVi5PW0945LoeRWLazDK9djjYNoJSZgj%2FFMMvot0M7brAP3zoaHfpgCBncQbeykhOgEB4jDQguKvBjqzAnWSVqb42AR%2FrkSxyzeUy2JvbHFC9nKXYEKHlJX7wyXt%2FhbXcSVKnhAhSSyNmaT7rfiNvEBhSsUr5S9M3GH3ra46vH5EM5EAIUcuF%2F7RTASWsTQvyiEMwQbrDOSh%2BBrg7Sk4AUJTeS59%2FWsfH2W%2BTs3g%2FY4iq2G2K7t8LKQt15jmYB%2F0JWOk47u2P92onQC%2Bumz%2BFORU5KybODrlheCiG9mAqLFl6okJAdDwvF%2BEVX172n%2F29Sgw45AJYettEldLxbXL%2FVtNVPSBT6wZTM3KWGsJ8UdUqyIEtttvii3mZ%2F9nF0hXVPY8O7iZZ91PV4roiL77XUe%2FXbxRN%2B6VzorrzzRIKCutHQFvbWnbm%2FcmFL%2Fa2%2BNOIzgzpVIPqKtYI5YlpX2%2FbW402jB1MrdQdOlvKFjae1Y%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240318T181032Z&X-Amz-SignedHeaders=host&X-Amz-Expires=43200&X-Amz-Credential=ASIAXGMJMOP3BKUMVTEM%2F20240318%2Fsa-east-1%2Fs3%2Faws4_request&X-Amz-Signature=bce8c1801c9a6ee42515960df03f5bb5cd2728a0850753666f5059496fb77354"
-    },
-    {
-      id: "fotof-3", 
-      url: "https://mp-example-bucket.s3.sa-east-1.amazonaws.com/ar-folder/nft2.mp4?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjENL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXNhLWVhc3QtMSJHMEUCIQCIM0qBfAfmwM%2FtbCt%2BwPlkjjOF%2FZ6DuPc9ElTia34o1AIgRFuNSDglQtucQKTudbSFklYT8NxlnaCwS1561BHSwc4q7QII2%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARABGgw0OTQ3NDYyMzU4OTQiDFm8JhdlXqlXqqFyvCrBAqUq9W9DKnZ5kuExAlXtbzMDrT%2BD4G%2BzJH8ZOjNxUl5VDmP14aTT7ZPhH1Lq%2BGn6OU7iLH8X5i2KwyVJbSvrpt7XYS2hdcT7MkJndDpV2q6QI7IhA5Jc4FebqQX1TaGNo%2FRxytTE7Qwtic431soDfvhdDHiRFyMbEq98TzwL%2BalndjPRb%2BOVNFdbklYH6ty7dUaRAMCrEak48Di8Em79SalKjGxew70XwdTmetHV3CsZSJpT9CFln9vPgbG0L2wXMu3EUQCYlhozUbGpYaNoLNGHR%2BFXIw1yakSlUOOvxmBUQ2EHqiSTvBJQjCfNSYxLQOOt8lUZXG855kR9YoMZM6FjThwAPOMKw%2FtHCwKCuVi5PW0945LoeRWLazDK9djjYNoJSZgj%2FFMMvot0M7brAP3zoaHfpgCBncQbeykhOgEB4jDQguKvBjqzAnWSVqb42AR%2FrkSxyzeUy2JvbHFC9nKXYEKHlJX7wyXt%2FhbXcSVKnhAhSSyNmaT7rfiNvEBhSsUr5S9M3GH3ra46vH5EM5EAIUcuF%2F7RTASWsTQvyiEMwQbrDOSh%2BBrg7Sk4AUJTeS59%2FWsfH2W%2BTs3g%2FY4iq2G2K7t8LKQt15jmYB%2F0JWOk47u2P92onQC%2Bumz%2BFORU5KybODrlheCiG9mAqLFl6okJAdDwvF%2BEVX172n%2F29Sgw45AJYettEldLxbXL%2FVtNVPSBT6wZTM3KWGsJ8UdUqyIEtttvii3mZ%2F9nF0hXVPY8O7iZZ91PV4roiL77XUe%2FXbxRN%2B6VzorrzzRIKCutHQFvbWnbm%2FcmFL%2Fa2%2BNOIzgzpVIPqKtYI5YlpX2%2FbW402jB1MrdQdOlvKFjae1Y%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240318T181057Z&X-Amz-SignedHeaders=host&X-Amz-Expires=43200&X-Amz-Credential=ASIAXGMJMOP3BKUMVTEM%2F20240318%2Fsa-east-1%2Fs3%2Faws4_request&X-Amz-Signature=9f0f105b598b79d71a5f2f69b075e811919d4c0f760d20c60074a18ca88c8a67"
-    },
-    {
-      id: "fotof-4", 
-      url: "https://mp-example-bucket.s3.sa-east-1.amazonaws.com/ar-folder/im1.mp4?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjENL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXNhLWVhc3QtMSJHMEUCIQCIM0qBfAfmwM%2FtbCt%2BwPlkjjOF%2FZ6DuPc9ElTia34o1AIgRFuNSDglQtucQKTudbSFklYT8NxlnaCwS1561BHSwc4q7QII2%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARABGgw0OTQ3NDYyMzU4OTQiDFm8JhdlXqlXqqFyvCrBAqUq9W9DKnZ5kuExAlXtbzMDrT%2BD4G%2BzJH8ZOjNxUl5VDmP14aTT7ZPhH1Lq%2BGn6OU7iLH8X5i2KwyVJbSvrpt7XYS2hdcT7MkJndDpV2q6QI7IhA5Jc4FebqQX1TaGNo%2FRxytTE7Qwtic431soDfvhdDHiRFyMbEq98TzwL%2BalndjPRb%2BOVNFdbklYH6ty7dUaRAMCrEak48Di8Em79SalKjGxew70XwdTmetHV3CsZSJpT9CFln9vPgbG0L2wXMu3EUQCYlhozUbGpYaNoLNGHR%2BFXIw1yakSlUOOvxmBUQ2EHqiSTvBJQjCfNSYxLQOOt8lUZXG855kR9YoMZM6FjThwAPOMKw%2FtHCwKCuVi5PW0945LoeRWLazDK9djjYNoJSZgj%2FFMMvot0M7brAP3zoaHfpgCBncQbeykhOgEB4jDQguKvBjqzAnWSVqb42AR%2FrkSxyzeUy2JvbHFC9nKXYEKHlJX7wyXt%2FhbXcSVKnhAhSSyNmaT7rfiNvEBhSsUr5S9M3GH3ra46vH5EM5EAIUcuF%2F7RTASWsTQvyiEMwQbrDOSh%2BBrg7Sk4AUJTeS59%2FWsfH2W%2BTs3g%2FY4iq2G2K7t8LKQt15jmYB%2F0JWOk47u2P92onQC%2Bumz%2BFORU5KybODrlheCiG9mAqLFl6okJAdDwvF%2BEVX172n%2F29Sgw45AJYettEldLxbXL%2FVtNVPSBT6wZTM3KWGsJ8UdUqyIEtttvii3mZ%2F9nF0hXVPY8O7iZZ91PV4roiL77XUe%2FXbxRN%2B6VzorrzzRIKCutHQFvbWnbm%2FcmFL%2Fa2%2BNOIzgzpVIPqKtYI5YlpX2%2FbW402jB1MrdQdOlvKFjae1Y%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240318T181123Z&X-Amz-SignedHeaders=host&X-Amz-Expires=43200&X-Amz-Credential=ASIAXGMJMOP3BKUMVTEM%2F20240318%2Fsa-east-1%2Fs3%2Faws4_request&X-Amz-Signature=83007cc356775a862a21645760427ede821c18b726a6bb6e2041d426ef394913"
-    },
-     
-    ]
-
+  <script type="module" src="./getItemsFromApi.js"></script>
   
-
-    function renderScene() {
+  <script>
+  
+    function renderScene(imgsIds) {
       const root = document.querySelector('#root')
       const sceneElement = document.createElement("a-scene");
       const assets = document.createElement("a-assets");
@@ -43,11 +28,11 @@
 
 
       // Iterate through the array of image IDs and create video elements
-      imgsIds.forEach(({id, url}) => {
+      imgsIds.forEach(({id, urlVideo}) => {
           const videoElement = document.createElement("video");
-          videoElement.setAttribute("src", `${url}`);
+          videoElement.setAttribute("src", `${urlVideo}`);
           videoElement.setAttribute("preload", "auto");
-          videoElement.setAttribute("id", id);
+          videoElement.setAttribute("id", `${id.toLowerCase()}`);
           videoElement.setAttribute("loop", "");
           videoElement.setAttribute("crossorigin", "anonymus");
 
@@ -57,19 +42,19 @@
       
       sceneElement.appendChild(assets)
 
-      imgsIds.forEach(({id, url}) => {
+      imgsIds.forEach(({id, url, urlDescriptor}) => {
           const aVideo = document.createElement("a-video")
           const nftElement = document.createElement("a-nft");
 
-          aVideo.setAttribute("src", `#${id}`);
+          aVideo.setAttribute("src", `#${id.toLowerCase()}`);
           aVideo.setAttribute("rotation", {x:-90 , y: 0, z: 0});
           aVideo.setAttribute("position",{x:90 , y: 0, z: -260} );
-          aVideo.setAttribute("width", "0");
-          aVideo.setAttribute("height", "0");
+          aVideo.setAttribute("width", "170");
+          aVideo.setAttribute("height", "340");
           aVideo.setAttribute("id", `a-video-${id}`);
 
 
-          nftElement.setAttribute(`${id}`, "");
+          nftElement.setAttribute(`${id.toLowerCase()}`, "");
           nftElement.setAttribute("type", "nft");
           nftElement.setAttribute("url", `./data/${id}/${id}`);
           nftElement.setAttribute("smooth", "true");
@@ -84,50 +69,52 @@
       root.appendChild(sceneElement);
       
     }
+
+    function registerComponents(imgsIds) {
+
+      imgsIds.map(({id}) => {
+
+      return AFRAME.registerComponent(id.toLowerCase(), {
+        init: function() {
+          var marker = this.el;
+          this.vid = document.querySelector(`#${id.toLowerCase()}`)
+          this.avid = document.querySelector(`#a-video-${id}`)
+
+          marker.addEventListener(
+            "markerFound",
+            function() {
+              this.vid.play();
+            }.bind(this)
+          );
+
+          marker.addEventListener(
+            "markerLost",
+            function() {
+              this.vid.pause();
+              this.vid.currentTime = 0;
+            }.bind(this)
+          );
+        },
+      });
+      })
+
+      
+    }
   </script>
   
   <script>
 
-    
-
     window.onload = function() {
-
-      renderScene()
-
-      imgsIds.map(({id}) => {
-
-          return AFRAME.registerComponent(id, {
-          init: function() {
-            var marker = this.el;
-            this.vid = document.querySelector(`#${id}`)
-            this.avid = document.querySelector(`#a-video-${id}`)
-    
-            marker.addEventListener(
-              "markerFound",
-              function() {
-                console.log(id, 'image was found')
-                
-                this.avid.setAttribute("width", "170");
-                this.avid.setAttribute("height", "340");
-
-                this.vid.play();
-              }.bind(this)
-            );
-    
-            marker.addEventListener(
-              "markerLost",
-              function() {
-                this.avid.setAttribute("width", "0");
-                this.avid.setAttribute("height", "0");
-
-                this.vid.pause();
-                this.vid.currentTime = 0;
-              }.bind(this)
-            );
-          },
-        });
-      })
+      fetch('./data/imgsIds.json')
+        .then((res) => {
+          return res.json()
+        })
+        .then((json) => {
+          renderScene(json)
+          registerComponents(json);
+        })
     };
+
   </script>
   
   <body id="root"  style="margin : 0px; overflow: hidden;">
