@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
   <title>AR</title>
 </head>
 <link ty>
@@ -14,19 +14,7 @@
 <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
 
 <script>
-
-  window.onload = async () => {
-
-    //const url = "http://localhost:4001/api/galerias/virtuales/descriptors"
-    const url = "https://npz-test-galeria-virtual.s3.us-west-2.amazonaws.com/api/galerias/virtuales/descriptors"
-
-    const response = await fetch(url);
-    const virtualItems = await response.json();
-    console.log(virtualItems);
-    const video = document.querySelector("#video");
-    const sceneElement = document.querySelector("#a-scene");
-    const messagesElement = document.querySelector("#messages");
-    virtualItems.forEach(virtualItem => {
+  function cargarImagen (virtualItem, video, messagesElement, sceneElement) {
       const aVideo = document.createElement("a-video")
       const nftElement = document.createElement("a-nft");
       const msgElement = document.createElement("p");
@@ -35,7 +23,7 @@
       virtualItem.message = `msg${virtualItem.id.toLowerCase().replace(/[^0-9a-z]+/gi, '')}`;
       aVideo.setAttribute("src", `#video`);
       aVideo.setAttribute("rotation", {x:-90 , y: 0, z: 0});
-      aVideo.setAttribute("position",{x:0 , y: 0, z: 0} );
+      aVideo.setAttribute("position",{x:90 , y: 0, z: 0} );
       aVideo.setAttribute("width", "17"*5);
       aVideo.setAttribute("height", "34"*5);
       aVideo.setAttribute("id", `${virtualItem.componentVideo}`);
@@ -44,11 +32,11 @@
       nftElement.setAttribute(`${virtualItem.componentNft}`, "");
       nftElement.setAttribute("type", "nft");
       nftElement.setAttribute("url", `${virtualItem.urlDescriptor}`);
-      nftElement.setAttribute("smooth", "false");
       nftElement.setAttribute("emitevents", "true");
-      nftElement.setAttribute("smoothount", "1");
-      nftElement.setAttribute("smoothtolerance", "0");
-      nftElement.setAttribute("smooththreshold", "0");
+      nftElement.setAttribute("smooth", "true");
+      nftElement.setAttribute("smoothCount", "10");
+      nftElement.setAttribute("smoothTolerance", "0.01");
+      nftElement.setAttribute("smoothThreshold", "5");
 
       nftElement.appendChild(aVideo);
       sceneElement.appendChild(nftElement);
@@ -58,68 +46,106 @@
       msgElement.setAttribute('style', 'display: none')
       messagesElement.appendChild(msgElement);
 
-      AFRAME.registerComponent(`${virtualItem.componentNft}`, {
-        update: function() {console.log(`update ${virtualItem.id}`)},
-        remove: function() {console.log(`remove ${virtualItem.id}`)},
-        tick: function() {
-          //console.log(`tick ${virtualItem.id}`)
-        },
-        tock: function() {
-          //console.log(`tock ${virtualItem.id}`)
-        },
-        play: function() {console.log(`play ${virtualItem.id}`)},
-        pause: function() {console.log(`pause ${virtualItem.id}`)},
-        updateSchema: function() {console.log(`updateSchema ${virtualItem.id}`)},
-        init: function () {
-          console.log(`init ${virtualItem.id}`)
+      setTimeout(() => {
+        AFRAME.registerComponent(`${virtualItem.componentNft}`, {
+          update: function() {console.log(`update ${virtualItem.id}`)},
+          remove: function() {console.log(`remove ${virtualItem.id}`)},
+          tick: function() {
+            //console.log(`tick ${virtualItem.id}`)
+          },
+          tock: function() {
+            //console.log(`tock ${virtualItem.id}`)
+          },
+          play: function() {console.log(`play ${virtualItem.id}`)},
+          pause: function() {console.log(`pause ${virtualItem.id}`)},
+          updateSchema: function() {console.log(`updateSchema ${virtualItem.id}`)},
+          init: function () {
+            console.log(`init ${virtualItem.id}`)
+  
+            var marker = this.el;
+            marker.addEventListener(
+              "markerFound",
+              function () {
+                console.log(`found ${virtualItem.id}`)
+                msgElement.setAttribute('style', 'display: block')
+  
+                video.setAttribute('src', virtualItem.urlVideo)
+                video.play();
+              }
+            );
+  
+            marker.addEventListener(
+              "markerLost",
+              function () {
+                console.log(`lost ${virtualItem.id}`)
+                msgElement.setAttribute('style', 'display: none')
+  
+                video.pause();
+                video.currentTime = 0;
+              }
+            );
+          }
+        });
+      },  500)
+      
+  }
+  var count = 0;
+  let virtualItems = []
+  window.onload = async () => {
 
-          var marker = this.el;
-          marker.addEventListener(
-            "markerFound",
-            function () {
-              console.log(`found ${virtualItem.id}`)
-              msgElement.setAttribute('style', 'display: block')
+    //const url = "http://localhost:4001/api/galerias/virtuales/descriptors"
+    const url = "https://npz-test-galeria-virtual.s3.us-west-2.amazonaws.com/api/galerias/virtuales/descriptors"
+    console.error(document.body.clientWidth);
+    console.error(document.body.clientHeight);
 
-              video.setAttribute('src', virtualItem.urlVideo)
-              video.play();
-            }
-          );
+    const response = await fetch(url);
+    virtualItems = await response.json();
+    console.log(virtualItems);
+    const video = document.querySelector("#video");
+    const sceneElement = document.querySelector("#a-scene");
+    const messagesElement = document.querySelector("#messages");
+    const generalMessage = document.querySelector("#general-messages");
+    generalMessage.innerHTML = 'Imagenes totales '+virtualItems.length + '. Cargadas  ' + count;
 
-          marker.addEventListener(
-            "markerLost",
-            function () {
-              console.log(`lost ${virtualItem.id}`)
-              msgElement.setAttribute('style', 'display: none')
+    if (virtualItems.length > 0) {
+      virtualItems.forEach((virtualItem) => {
 
-              video.pause();
-              video.currentTime = 0;
-            }
-          );
-        }
-      });
-    })
+        cargarImagen (virtualItem, video, messagesElement, sceneElement)
+      })
+    }
     window.addEventListener("arjs-nft-loaded", (event) => {
       console.log("Finlilyy")
       console.log(event)
+      count++
+      generalMessage.innerHTML = 'Imagenes totales '+virtualItems.length + '. Cargadas  ' + count;
+      if(virtualItems.length > count) {
+        // cargarImagen (virtualItems[count], video, messagesElement, sceneElement)
+      }
     });
+    window.addEventListener('arjs-nft-init-data', function(nft) {
+      console.log({nft});})
   };
 
 </script>
 
 <body id="root" style="margin : 0px; overflow: hidden;">
-  <div style="position: absolute;z-index: 10;color: white;font-size: 50px;top: 0;" id="messages">
+  <div style="position: absolute;z-index: 10;color: white;font-size: 25px;top: 0; text-align: center; width: 100%" id="messages">
+    <p id="general-messages">
+
+    </p>
   </div>
   <div class="arjs-loader">
     <div>Cargando por favor espere</div>
   </div>
 
-  <a-scene vr-mode-ui="enabled: false;" renderer="antialias: true; alpha: true; precision: mediump;" embedded
-    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;" id="a-scene">
+  <a-scene inspector keyboard-shortcuts vr-mode-ui="enabled: true;" renderer="antialias: true; alpha: true; precision: mediump; logarithmicDepthBuffer: true;" embedded
+    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: true; maxDetectionRate: 30; inspector: true;" id="a-scene">
+    <a-entity camera></a-entity>
+
     <a-assets>
-      <video src="https://npz-test-galeria-virtual.s3.us-west-2.amazonaws.com/alumnos/Alumno+01.mp4" preload="auto" id="video" response-type="arraybuffer" loop crossorigin="anonymous"></video>
+      <video src="" preload="auto" id="video" response-type="arraybuffer" loop crossorigin="anonymous"></video>
     </a-assets>
 
-    <a-entity camera></a-entity>
   </a-scene>
   
 
