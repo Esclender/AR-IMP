@@ -1,276 +1,128 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>AR</title>
-  </head>
-  <link ty >
 
-  <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script>
-  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+  <title>AR</title>
+</head>
+<link ty>
 
-  <script type="module" src="./getItemsFromApi.js"></script>
-  
-  <script>
-  
-    function renderScene(imgsIds) {
-      const root = document.querySelector('#root')
-      const sceneElement = document.createElement("a-scene");
-      const assets = document.createElement("a-assets");
+<script
+  src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script>
+<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
 
-      sceneElement.setAttribute("scene", "");
-      sceneElement.setAttribute("vr-mode-ui", "enabled: false;");
-      sceneElement.setAttribute("renderer", "antialias: true; alpha: true; precision: mediump;");
-      sceneElement.setAttribute("embedded", "");
-      sceneElement.setAttribute("arjs", "trackingMethod: best; sourceType: webcam; debugUIEnabled: false;");
+<script>
 
+  window.onload = async () => {
 
-      // Iterate through the array of image IDs and create video elements
-      imgsIds.forEach(({id, urlVideo}) => {
-          const videoElement = document.createElement("video");
-          videoElement.setAttribute("src", `${urlVideo}`);
-          videoElement.setAttribute("preload", "auto");
-          videoElement.setAttribute("id", `${id.toLowerCase()}`);
-          videoElement.setAttribute("loop", "");
-          videoElement.setAttribute("crossorigin", "anonymus");
+    //const url = "http://localhost:4001/api/galerias/virtuales/descriptors"
+    const url = "https://npz-test-galeria-virtual.s3.us-west-2.amazonaws.com/api/galerias/virtuales/descriptors"
 
-          // Append the video element to the assets
-          assets.appendChild(videoElement);
-      })
+    const response = await fetch(url);
+    const virtualItems = await response.json();
+    console.log(virtualItems);
+    const video = document.querySelector("#video");
+    const sceneElement = document.querySelector("#a-scene");
+    const messagesElement = document.querySelector("#messages");
+    virtualItems.forEach(virtualItem => {
+      const aVideo = document.createElement("a-video")
+      const nftElement = document.createElement("a-nft");
+      const msgElement = document.createElement("p");
+      virtualItem.componentNft = `nft${virtualItem.id.toLowerCase().replace(/[^0-9a-z]+/gi, '')}`;
+      virtualItem.componentVideo = `video${virtualItem.id.toLowerCase().replace(/[^0-9a-z]+/gi, '')}`;
+      virtualItem.message = `msg${virtualItem.id.toLowerCase().replace(/[^0-9a-z]+/gi, '')}`;
+      aVideo.setAttribute("src", `#video`);
+      aVideo.setAttribute("rotation", {x:-90 , y: 0, z: 0});
+      aVideo.setAttribute("position",{x:0 , y: 0, z: 0} );
+      aVideo.setAttribute("width", "17"*5);
+      aVideo.setAttribute("height", "34"*5);
+      aVideo.setAttribute("id", `${virtualItem.componentVideo}`);
+
       
-      sceneElement.appendChild(assets)
+      nftElement.setAttribute(`${virtualItem.componentNft}`, "");
+      nftElement.setAttribute("type", "nft");
+      nftElement.setAttribute("url", `${virtualItem.urlDescriptor}`);
+      nftElement.setAttribute("smooth", "false");
+      nftElement.setAttribute("emitevents", "true");
+      nftElement.setAttribute("smoothount", "1");
+      nftElement.setAttribute("smoothtolerance", "0");
+      nftElement.setAttribute("smooththreshold", "0");
 
-      imgsIds.forEach(({id, url, urlDescriptor}) => {
-          const aVideo = document.createElement("a-video")
-          const nftElement = document.createElement("a-nft");
+      nftElement.appendChild(aVideo);
+      sceneElement.appendChild(nftElement);
 
-          aVideo.setAttribute("src", `#${id.toLowerCase()}`);
-          aVideo.setAttribute("rotation", {x:-90 , y: 0, z: 0});
-          aVideo.setAttribute("position",{x:90 , y: 0, z: -260} );
-          aVideo.setAttribute("width", "170");
-          aVideo.setAttribute("height", "340");
-          aVideo.setAttribute("id", `a-video-${id}`);
+      msgElement.setAttribute('id', virtualItem.message)
+      msgElement.innerHTML = 'Found ' + virtualItem.id
+      msgElement.setAttribute('style', 'display: none')
+      messagesElement.appendChild(msgElement);
 
-
-          nftElement.setAttribute(`${id.toLowerCase()}`, "");
-          nftElement.setAttribute("type", "nft");
-          nftElement.setAttribute("url", `https://mpulse-firmas-virtuales.s3.sa-east-1.amazonaws.com/9033d5e8-b4d4-4209-a80c-cc1d6a13cac2/a1/Alumno01`);
-          nftElement.setAttribute("smooth", "true");
-          nftElement.setAttribute("smoothount", "10");
-          nftElement.setAttribute("smoothtolerance", "0.01");
-          nftElement.setAttribute("smooththreshold", "5");
-
-          nftElement.appendChild(aVideo);
-          sceneElement.appendChild(nftElement);
-      })
-
-      root.appendChild(sceneElement);
-      
-    }
-
-    function registerComponents(imgsIds) {
-
-      imgsIds.map(({id}) => {
-
-      return AFRAME.registerComponent(id.toLowerCase(), {
-        init: function() {
-          var marker = this.el;
-          this.vid = document.querySelector(`#${id.toLowerCase()}`)
-          this.avid = document.querySelector(`#a-video-${id}`)
-
-          marker.addEventListener(
-            "markerFound",
-            function() {
-              this.vid.play();
-            }.bind(this)
-          );
-
-          marker.addEventListener(
-            "markerLost",
-            function() {
-              this.vid.pause();
-              this.vid.currentTime = 0;
-            }.bind(this)
-          );
+      AFRAME.registerComponent(`${virtualItem.componentNft}`, {
+        update: function() {console.log(`update ${virtualItem.id}`)},
+        remove: function() {console.log(`remove ${virtualItem.id}`)},
+        tick: function() {
+          //console.log(`tick ${virtualItem.id}`)
         },
-      });
-      })
+        tock: function() {
+          //console.log(`tock ${virtualItem.id}`)
+        },
+        play: function() {console.log(`play ${virtualItem.id}`)},
+        pause: function() {console.log(`pause ${virtualItem.id}`)},
+        updateSchema: function() {console.log(`updateSchema ${virtualItem.id}`)},
+        init: function () {
+          console.log(`init ${virtualItem.id}`)
 
-      
-    }
-  </script>
-  
-  <script>
-
-    window.onload = function() {
-      AFRAME.registerComponent("videohandler1", {
-        init: function() {
           var marker = this.el;
-  
-          this.vid = document.querySelector("#vid1");
-  
           marker.addEventListener(
             "markerFound",
-            function() {
-              console.log('found')
-              this.vid.play();
-            }.bind(this)
+            function () {
+              console.log(`found ${virtualItem.id}`)
+              msgElement.setAttribute('style', 'display: block')
+
+              video.setAttribute('src', virtualItem.urlVideo)
+              video.play();
+            }
           );
-  
+
           marker.addEventListener(
             "markerLost",
-            function() {
-              this.vid.pause();
-              this.vid.currentTime = 0;
-            }.bind(this)
+            function () {
+              console.log(`lost ${virtualItem.id}`)
+              msgElement.setAttribute('style', 'display: none')
+
+              video.pause();
+              video.currentTime = 0;
+            }
           );
         }
       });
+    })
+    window.addEventListener("arjs-nft-loaded", (event) => {
+      console.log("Finlilyy")
+      console.log(event)
+    });
+  };
 
-      AFRAME.registerComponent("videohandler2", {
-        init: function() {
-          var marker = this.el;
-  
-          this.vid = document.querySelector("#vid2");
-  
-          marker.addEventListener(
-            "markerFound",
-            function() {
-              console.log('found')
-              this.vid.play();
-            }.bind(this)
-          );
-  
-          marker.addEventListener(
-            "markerLost",
-            function() {
-              this.vid.pause();
-              this.vid.currentTime = 0;
-            }.bind(this)
-          );
-        }
-      });
+</script>
 
-      AFRAME.registerComponent("videohandler3", {
-        init: function() {
-          var marker = this.el;
-  
-          this.vid = document.querySelector("#vid3");
-  
-          marker.addEventListener(
-            "markerFound",
-            function() {
-              console.log('found')
-              this.vid.play();
-            }.bind(this)
-          );
-  
-          marker.addEventListener(
-            "markerLost",
-            function() {
-              this.vid.pause();
-              this.vid.currentTime = 0;
-            }.bind(this)
-          );
-        }
-      });
-    };
+<body id="root" style="margin : 0px; overflow: hidden;">
+  <div style="position: absolute;z-index: 10;color: white;font-size: 50px;top: 0;" id="messages">
+  </div>
+  <div class="arjs-loader">
+    <div>Cargando por favor espere</div>
+  </div>
 
-  </script>
-  
-  <body id="root"  style="margin : 0px; overflow: hidden;">
-    <div class="arjs-loader">
-      <div>Loading, please wait...</div>
-    </div>
-
-    <a-scene
-    vr-mode-ui="enabled: false;"
-    renderer="antialias: true; alpha: true; precision: mediump;"
-    embedded
-    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
-  >
+  <a-scene vr-mode-ui="enabled: false;" renderer="antialias: true; alpha: true; precision: mediump;" embedded
+    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;" id="a-scene">
     <a-assets>
-      <video
-        src="https://mp-example-bucket.s3.sa-east-1.amazonaws.com/Alumno01.mp4"
-        preload="auto"
-        id="vid1"
-        response-type="arraybuffer"
-        loop
-        crossorigin="anonymous"
-        
-      ></video>
-
-      <video
-        src="https://mp-example-bucket.s3.sa-east-1.amazonaws.com/Alumno02.mp4"
-        preload="auto"
-        id="vid2"
-        response-type="arraybuffer"
-        loop
-        crossorigin="anonymous"
-        
-      ></video>
-
-      <video
-        src="https://mp-example-bucket.s3.sa-east-1.amazonaws.com/Alumno03.mp4"
-        preload="auto"
-        id="vid3"
-        response-type="arraybuffer"
-        loop
-        crossorigin="anonymous"
-
-      ></video>
-
-
+      <video src="https://npz-test-galeria-virtual.s3.us-west-2.amazonaws.com/alumnos/Alumno+01.mp4" preload="auto" id="video" response-type="arraybuffer" loop crossorigin="anonymous"></video>
     </a-assets>
 
-    <a-nft
-      videohandler1
-      type="nft"
-      url="https://mpulse-firmas-virtuales.s3.sa-east-1.amazonaws.com/9033d5e8-b4d4-4209-a80c-cc1d6a13cac2/a1/Alumno01"
-      smooth="true"
-      smoothount="10"
-      smoothtolerance="0.01"
-      smooththreshold="5"
-    >
-      <a-video src="#vid1" rotation="-90 0 0" position="160 0 -170" width="170" height="340">
-      </a-video>
-
-    </a-nft>
-
-    <a-nft
-      videohandler2
-      type="nft"
-      url="https://mpulse-firmas-virtuales.s3.sa-east-1.amazonaws.com/9033d5e8-b4d4-4209-a80c-cc1d6a13cac2/a2/Alumno02"
-      smooth="true"
-      smoothount="10"
-      smoothtolerance="0.01"
-      smooththreshold="5"
-    >
-      <a-video src="#vid2" rotation="-90 0 0" position="160 0 -170" width="170" height="340">
-      </a-video>
-
-    </a-nft>
-
-    <a-nft
-      videohandler3
-      type="nft"
-      url="https://mpulse-firmas-virtuales.s3.sa-east-1.amazonaws.com/9033d5e8-b4d4-4209-a80c-cc1d6a13cac2/a3/Alumno03"
-      smooth="true"
-      smoothount="10"
-      smoothtolerance="0.01"
-      smooththreshold="5"
-    >
-      <a-video src="#vid3" rotation="-90 0 0" position="160 0 -170" width="170" height="340">
-      </a-video>
-
-    </a-nft>
-
-
-    <a-entity  camera></a-entity>
+    <a-entity camera></a-entity>
   </a-scene>
+  
 
-    
 </body>
+
 </html>
