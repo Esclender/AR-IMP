@@ -21,7 +21,6 @@ export default function downloadAndSaveDescriptors(imageUrl, destinationFolder) 
 
         fileStream.on('finish', () => {
             fileStream.close();
-            console.log('Image downloaded successfully');
         });
 
         fileStream.on('error', (err) => {
